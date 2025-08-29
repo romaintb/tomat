@@ -1,0 +1,10 @@
+# Clippy configuration for strict linting
+avoid-breaking-exported-api = false
+msrv = "1.70.0"
+
+# Disable lints that might be too pedantic for this project
+disallowed-names = []
+
+# Allow certain patterns that are common in TUI applications
+allow-dbg-in-tests = true
+allow-print-in-tests = true

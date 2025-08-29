@@ -1,0 +1,44 @@
+[package]
+name = "tomat"
+version = "0.1.0"
+edition = "2021"
+authors = ["Romain Bertrand <romain@doxin.net>"]
+description = "A terminal-based Pomodoro technique timer using ratatui"
+license = "MIT"
+repository = "https://github.com/romaintb/tomat"
+keywords = ["tui", "pomodoro", "productivity", "timer", "terminal"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+ratatui = "0.28"
+crossterm = "0.28"
+tokio = { version = "1.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+clap = { version = "4.0", features = ["derive"] }
+anyhow = "1.0"
+dirs = "5.0"
+
+[dev-dependencies]
+assert_cmd = "2.0"
+predicates = "3.0"
+tempfile = "3.0"
+cargo-husky = { version = "1.0", default-features = false, features = ["precommit-hook", "run-cargo-test", "run-cargo-clippy", "run-cargo-fmt"] }
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+cargo = { level = "warn", priority = -1 }
+
+# Allowed lints that might be too restrictive
+module_name_repetitions = "allow"
+similar_names = "allow"
+too_many_lines = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
