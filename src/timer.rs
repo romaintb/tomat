@@ -7,8 +7,6 @@ pub enum TimerState {
     LongBreak,
 }
 
-
-
 pub struct PomodoroTimer {
     work_duration: Duration,
     break_duration: Duration,
@@ -103,6 +101,4 @@ impl PomodoroTimer {
         let elapsed = self.total_duration - self.time_remaining;
         elapsed.as_secs_f64() / self.total_duration.as_secs_f64()
     }
-
-
 }

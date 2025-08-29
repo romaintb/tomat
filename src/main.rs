@@ -31,11 +31,7 @@ async fn main() -> Result<()> {
     let mut terminal = ratatui::init();
     terminal.clear()?;
 
-    let mut app = App::new(
-        cli.work,
-        cli.break_time,
-        cli.long_break_time,
-    );
+    let mut app = App::new(cli.work, cli.break_time, cli.long_break_time);
     let result = run_app(&mut terminal, &mut app);
 
     ratatui::restore();

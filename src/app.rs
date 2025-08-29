@@ -1,4 +1,3 @@
-
 use chrono::{DateTime, Local};
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use std::time::{Duration, Instant};
