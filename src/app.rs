@@ -7,7 +7,6 @@ use crate::timer::{PomodoroTimer, TimerState};
 pub struct App {
     pub timer: PomodoroTimer,
     pub should_quit: bool,
-    pub paused: bool,
     pub sessions_completed: u32,
     pub current_session_start: Option<DateTime<Local>>,
     last_tick: Instant,
@@ -18,7 +17,6 @@ impl App {
         Self {
             timer: PomodoroTimer::new(work_duration, break_duration, long_break_duration),
             should_quit: false,
-            paused: false,
             sessions_completed: 0,
             current_session_start: None,
             last_tick: Instant::now(),
@@ -52,13 +50,11 @@ impl App {
         let now = Instant::now();
         let elapsed = now.duration_since(self.last_tick);
 
-        if !self.paused {
-            let session_completed = self.timer.tick(elapsed);
-            if session_completed {
-                self.sessions_completed += 1;
-                if matches!(self.timer.state(), TimerState::Work) {
-                    self.current_session_start = Some(Local::now());
-                }
+        let session_completed = self.timer.tick(elapsed);
+        if session_completed {
+            self.sessions_completed += 1;
+            if matches!(self.timer.state(), TimerState::Work) {
+                self.current_session_start = Some(Local::now());
             }
         }
 
@@ -66,18 +62,20 @@ impl App {
     }
 
     fn toggle_pause(&mut self) {
-        self.paused = !self.paused;
+        if self.timer.is_paused() {
+            self.timer.resume();
+        } else {
+            self.timer.pause();
+        }
     }
 
     fn reset_timer(&mut self) {
         self.timer.reset();
-        self.paused = false;
         self.current_session_start = None;
     }
 
     fn skip_session(&mut self) {
         self.timer.skip_to_next();
-        self.paused = false;
     }
 
     pub const fn time_remaining(&self) -> Duration {

@@ -36,7 +36,7 @@ cargo install tomat
 tomat
 
 # Customize durations (in minutes)
-tomat -w 30 -b 10 -l 20
+tomat -w 30 -s 10 -l 20
 ```
 
 ### Controls
@@ -53,7 +53,7 @@ Usage: tomat [OPTIONS]
 
 Options:
   -w, --work-duration <WORK_DURATION>              Work session duration in minutes [default: 25]
-  -b, --break-duration <BREAK_DURATION>            Short break duration in minutes [default: 5]
+  -s, --short-break <SHORT_BREAK>                  Short break duration in minutes [default: 5]
   -l, --long-break-duration <LONG_BREAK_DURATION>  Long break duration in minutes [default: 15]
   -h, --help                                       Print help
 ```
@@ -72,7 +72,7 @@ The Pomodoro Technique is a time management method that uses a timer to break wo
 
 ### Prerequisites
 
-- Rust 1.70.0 or higher
+- Rust 1.74.0 or higher
 - Cargo
 
 ### Building

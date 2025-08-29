@@ -25,14 +25,17 @@ pub fn render(frame: &mut Frame, app: &App) {
 fn render_header(frame: &mut Frame, area: Rect, app: &App) {
     let title = match app.current_state() {
         TimerState::Work => "🍅 Pomodoro - Work Session",
+        TimerState::WorkPaused => "⏸️ Pomodoro - Work Session (Paused)",
         TimerState::ShortBreak => "☕ Pomodoro - Short Break",
+        TimerState::ShortBreakPaused => "⏸️ Pomodoro - Short Break (Paused)",
         TimerState::LongBreak => "🌴 Pomodoro - Long Break",
+        TimerState::LongBreakPaused => "⏸️ Pomodoro - Long Break (Paused)",
     };
 
     let color = match app.current_state() {
-        TimerState::Work => Color::Red,
-        TimerState::ShortBreak => Color::Yellow,
-        TimerState::LongBreak => Color::Green,
+        TimerState::Work | TimerState::WorkPaused => Color::Red,
+        TimerState::ShortBreak | TimerState::ShortBreakPaused => Color::Yellow,
+        TimerState::LongBreak | TimerState::LongBreakPaused => Color::Green,
     };
 
     let header = Paragraph::new(title)
@@ -49,7 +52,7 @@ fn render_timer(frame: &mut Frame, area: Rect, app: &App) {
     let seconds = time_remaining.as_secs() % 60;
 
     let time_text = format!("{minutes:02}:{seconds:02}");
-    let status_text = if app.paused { " (PAUSED)" } else { "" };
+    let status_text = if app.timer.is_paused() { " (PAUSED)" } else { "" };
     let full_text = format!("{time_text}{status_text}");
 
     let timer_display = Paragraph::new(full_text)

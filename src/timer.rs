@@ -3,8 +3,11 @@ use std::time::Duration;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TimerState {
     Work,
+    WorkPaused,
     ShortBreak,
+    ShortBreakPaused,
     LongBreak,
+    LongBreakPaused,
 }
 
 pub struct PomodoroTimer {
@@ -35,6 +38,11 @@ impl PomodoroTimer {
     }
 
     pub fn tick(&mut self, elapsed: Duration) -> bool {
+        // Don't tick if paused
+        if self.is_paused() {
+            return false;
+        }
+        
         if elapsed >= self.time_remaining {
             self.complete_session();
             true
@@ -46,7 +54,7 @@ impl PomodoroTimer {
 
     fn complete_session(&mut self) {
         match self.current_state {
-            TimerState::Work => {
+            TimerState::Work | TimerState::WorkPaused => {
                 self.work_sessions_completed += 1;
                 if self.work_sessions_completed % 4 == 0 {
                     self.start_long_break();
@@ -54,7 +62,8 @@ impl PomodoroTimer {
                     self.start_short_break();
                 }
             }
-            TimerState::ShortBreak | TimerState::LongBreak => {
+            TimerState::ShortBreak | TimerState::ShortBreakPaused
+            | TimerState::LongBreak | TimerState::LongBreakPaused => {
                 self.start_work();
             }
         }
@@ -100,5 +109,30 @@ impl PomodoroTimer {
     pub fn progress(&self) -> f64 {
         let elapsed = self.total_duration - self.time_remaining;
         elapsed.as_secs_f64() / self.total_duration.as_secs_f64()
+    }
+
+    pub fn pause(&mut self) {
+        self.current_state = match self.current_state {
+            TimerState::Work => TimerState::WorkPaused,
+            TimerState::ShortBreak => TimerState::ShortBreakPaused,
+            TimerState::LongBreak => TimerState::LongBreakPaused,
+            paused => paused, // Already paused states remain unchanged
+        };
+    }
+
+    pub fn resume(&mut self) {
+        self.current_state = match self.current_state {
+            TimerState::WorkPaused => TimerState::Work,
+            TimerState::ShortBreakPaused => TimerState::ShortBreak,
+            TimerState::LongBreakPaused => TimerState::LongBreak,
+            active => active, // Already active states remain unchanged
+        };
+    }
+
+    pub const fn is_paused(&self) -> bool {
+        matches!(
+            self.current_state,
+            TimerState::WorkPaused | TimerState::ShortBreakPaused | TimerState::LongBreakPaused
+        )
     }
 }
