@@ -42,7 +42,7 @@ impl PomodoroTimer {
         if self.is_paused() {
             return false;
         }
-        
+
         if elapsed >= self.time_remaining {
             self.complete_session();
             true
@@ -62,8 +62,10 @@ impl PomodoroTimer {
                     self.start_short_break();
                 }
             }
-            TimerState::ShortBreak | TimerState::ShortBreakPaused
-            | TimerState::LongBreak | TimerState::LongBreakPaused => {
+            TimerState::ShortBreak
+            | TimerState::ShortBreakPaused
+            | TimerState::LongBreak
+            | TimerState::LongBreakPaused => {
                 self.start_work();
             }
         }

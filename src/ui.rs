@@ -52,7 +52,11 @@ fn render_timer(frame: &mut Frame, area: Rect, app: &App) {
     let seconds = time_remaining.as_secs() % 60;
 
     let time_text = format!("{minutes:02}:{seconds:02}");
-    let status_text = if app.timer.is_paused() { " (PAUSED)" } else { "" };
+    let status_text = if app.timer.is_paused() {
+        " (PAUSED)"
+    } else {
+        ""
+    };
     let full_text = format!("{time_text}{status_text}");
 
     let timer_display = Paragraph::new(full_text)

@@ -1,8 +1,8 @@
 //! A terminal-based Pomodoro technique timer.
 #![allow(clippy::multiple_crate_versions)]
 
-use std::io;
 use clap::Parser;
+use std::io;
 
 mod app;
 mod timer;
@@ -23,7 +23,6 @@ struct Cli {
     #[arg(short, long, default_value_t = 15)]
     long_break_time: u32,
 }
-
 
 fn main() -> io::Result<()> {
     let cli = Cli::parse();
