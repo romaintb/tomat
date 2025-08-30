@@ -5,30 +5,12 @@ hard_tabs = false
 tab_spaces = 4
 
 # Import formatting
-imports_granularity = "Crate"
-group_imports = "StdExternalCrate"
 reorder_imports = true
 
 # Function formatting
-fn_args_layout = "Tall"
-brace_style = "SameLineWhere"
-
-# Control flow formatting
-control_brace_style = "AlwaysSameLine"
-
-# String formatting
-format_strings = true
-
-# Comment formatting
-format_code_in_doc_comments = true
-normalize_comments = true
-normalize_doc_attributes = true
+fn_params_layout = "Tall"
 
 # Misc formatting
 newline_style = "Unix"
 remove_nested_parens = true
 use_small_heuristics = "Default"
-where_single_line = true
-
-# Advanced options
-unstable_features = false
