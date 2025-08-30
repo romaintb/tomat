@@ -17,12 +17,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        rust: [1.70.0, stable, beta]
+        rust: ["1.74.0", stable, beta]
         exclude:
           - os: windows-latest
-            rust: 1.70.0
+            rust: "1.74.0"
           - os: macos-latest
-            rust: 1.70.0
+            rust: "1.74.0"
           - os: windows-latest
             rust: beta
           - os: macos-latest

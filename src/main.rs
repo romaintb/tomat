@@ -1,8 +1,8 @@
 //! A terminal-based Pomodoro technique timer.
 #![allow(clippy::multiple_crate_versions)]
 
-use anyhow::Result;
 use clap::Parser;
+use std::io;
 
 mod app;
 mod timer;
@@ -18,20 +18,19 @@ struct Cli {
     work: u32,
 
     #[arg(short, long, default_value_t = 5)]
-    break_time: u32,
+    short_break: u32,
 
     #[arg(short, long, default_value_t = 15)]
     long_break_time: u32,
 }
 
-#[tokio::main]
-async fn main() -> Result<()> {
+fn main() -> io::Result<()> {
     let cli = Cli::parse();
 
     let mut terminal = ratatui::init();
     terminal.clear()?;
 
-    let mut app = App::new(cli.work, cli.break_time, cli.long_break_time);
+    let mut app = App::new(cli.work, cli.short_break, cli.long_break_time);
     let result = run_app(&mut terminal, &mut app);
 
     ratatui::restore();
@@ -39,7 +38,7 @@ async fn main() -> Result<()> {
     result
 }
 
-fn run_app(terminal: &mut ratatui::DefaultTerminal, app: &mut App) -> Result<()> {
+fn run_app(terminal: &mut ratatui::DefaultTerminal, app: &mut App) -> io::Result<()> {
     loop {
         terminal.draw(|frame| ui::render(frame, app))?;
 
