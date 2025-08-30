@@ -139,7 +139,7 @@ impl App {
         self.naming_input.clear();
     }
 
-    fn is_work_session(&self) -> bool {
+    const fn is_work_session(&self) -> bool {
         matches!(
             self.timer.state(),
             TimerState::Work | TimerState::WorkPaused
