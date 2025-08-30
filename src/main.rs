@@ -43,16 +43,11 @@ fn run_app(terminal: &mut ratatui::DefaultTerminal, app: &mut App) -> io::Result
         terminal.draw(|frame| ui::render(frame, app))?;
 
         if crossterm::event::poll(std::time::Duration::from_millis(100))? {
-            match crossterm::event::read()? {
-                crossterm::event::Event::Key(key) => {
-                    // Only handle key press events, ignore key release
-                    if key.kind == crossterm::event::KeyEventKind::Press {
-                        if app.handle_key(key) {
-                            break;
-                        }
-                    }
+            if let crossterm::event::Event::Key(key) = crossterm::event::read()? {
+                // Only handle key press events, ignore key release
+                if key.kind == crossterm::event::KeyEventKind::Press && app.handle_key(key) {
+                    break;
                 }
-                _ => {} // Ignore other events
             }
         }
 

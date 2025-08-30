@@ -1,6 +1,6 @@
 # Clippy configuration for strict linting
 avoid-breaking-exported-api = false
-msrv = "1.70.0"
+msrv = "1.74.0"
 
 # Disable lints that might be too pedantic for this project
 disallowed-names = []
