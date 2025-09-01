@@ -3,6 +3,7 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use std::time::{Duration, Instant};
 
 use crate::timer::{PomodoroTimer, TimerState};
+use crate::ui::screens::{fullscreen::FullscreenScreen, normal::NormalScreen, Screen};
 
 pub struct App {
     pub timer: PomodoroTimer,
@@ -12,6 +13,7 @@ pub struct App {
     pub current_session_name: String,
     pub naming_mode: bool,
     pub naming_input: String,
+    pub current_screen: Box<dyn Screen>,
     last_tick: Instant,
 }
 
@@ -25,6 +27,7 @@ impl App {
             current_session_name: String::new(),
             naming_mode: false,
             naming_input: String::new(),
+            current_screen: Box::new(NormalScreen),
             last_tick: Instant::now(),
         }
     }
@@ -40,6 +43,9 @@ impl App {
                 KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => {
                     self.should_quit = true;
                 }
+                KeyCode::Char('f') => {
+                    self.toggle_screen();
+                }
                 KeyCode::Char(' ') | KeyCode::Enter => {
                     if self.timer.state() == TimerState::NotStarted {
                         self.start_timer();
@@ -54,7 +60,8 @@ impl App {
                     self.skip_session();
                 }
                 KeyCode::Char('n') => {
-                    if self.is_work_session() {
+                    // Allow naming sessions in any state except when already in naming mode
+                    if !self.naming_mode {
                         self.enter_naming_mode();
                     }
                 }
@@ -110,10 +117,6 @@ impl App {
         self.timer.state()
     }
 
-    pub fn progress(&self) -> f64 {
-        self.timer.progress()
-    }
-
     fn handle_naming_input(&mut self, key: KeyEvent) {
         match key.code {
             KeyCode::Enter => {
@@ -148,10 +151,16 @@ impl App {
         self.naming_input.clear();
     }
 
-    const fn is_work_session(&self) -> bool {
-        matches!(
-            self.timer.state(),
-            TimerState::Work | TimerState::WorkPaused
-        )
+    fn toggle_screen(&mut self) {
+        if self
+            .current_screen
+            .as_any()
+            .downcast_ref::<NormalScreen>()
+            .is_some()
+        {
+            self.current_screen = Box::new(FullscreenScreen);
+        } else {
+            self.current_screen = Box::new(NormalScreen);
+        }
     }
 }

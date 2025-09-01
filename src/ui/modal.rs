@@ -2,7 +2,7 @@
 
 use ratatui::{
     prelude::*,
-    widgets::{Block, Borders, Paragraph},
+    widgets::{Block, BorderType, Borders, Paragraph},
 };
 
 use crate::app::App;
@@ -24,7 +24,7 @@ pub fn render(frame: &mut Frame, app: &App) {
         .style(Style::default().bg(Color::Black))
         .borders(Borders::ALL)
         .border_style(Style::default().fg(Color::Yellow))
-        .border_type(ratatui::widgets::BorderType::Rounded); // Rounded corners
+        .border_type(BorderType::Rounded); // Rounded corners
     frame.render_widget(clear_block, modal_area);
 
     // Create the modal layout with proper spacing
@@ -45,7 +45,7 @@ pub fn render(frame: &mut Frame, app: &App) {
                 .fg(Color::Yellow)
                 .add_modifier(Modifier::BOLD),
         )
-        .alignment(Alignment::Center);
+        .alignment(ratatui::layout::Alignment::Center);
 
     frame.render_widget(title, chunks[0]);
 
@@ -58,12 +58,12 @@ pub fn render(frame: &mut Frame, app: &App) {
 
     let input = Paragraph::new(input_display)
         .style(Style::default().fg(Color::Black).bg(Color::White))
-        .alignment(Alignment::Left)
+        .alignment(ratatui::layout::Alignment::Left)
         .block(
             Block::default()
                 .borders(Borders::ALL)
                 .border_style(Style::default().fg(Color::Cyan))
-                .border_type(ratatui::widgets::BorderType::Rounded)
+                .border_type(BorderType::Rounded)
                 .title("Session Name"),
         );
 
@@ -72,7 +72,7 @@ pub fn render(frame: &mut Frame, app: &App) {
     // Instructions
     let instructions = Paragraph::new("Enter to save • Esc to cancel")
         .style(Style::default().fg(Color::Gray))
-        .alignment(Alignment::Center);
+        .alignment(ratatui::layout::Alignment::Center);
 
     frame.render_widget(instructions, chunks[2]);
 }

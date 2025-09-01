@@ -5,6 +5,7 @@ use clap::Parser;
 use std::io;
 
 mod app;
+mod data;
 mod timer;
 mod ui;
 

@@ -120,15 +120,6 @@ impl PomodoroTimer {
         self.time_remaining
     }
 
-    pub fn progress(&self) -> f64 {
-        if self.current_state == TimerState::NotStarted || self.total_duration == Duration::ZERO {
-            0.0
-        } else {
-            let elapsed = self.total_duration - self.time_remaining;
-            elapsed.as_secs_f64() / self.total_duration.as_secs_f64()
-        }
-    }
-
     pub fn pause(&mut self) {
         self.current_state = match self.current_state {
             TimerState::Work => TimerState::WorkPaused,
@@ -152,5 +143,17 @@ impl PomodoroTimer {
             self.current_state,
             TimerState::WorkPaused | TimerState::ShortBreakPaused | TimerState::LongBreakPaused
         )
+    }
+
+    pub const fn work_duration(&self) -> Duration {
+        self.work_duration
+    }
+
+    pub const fn break_duration(&self) -> Duration {
+        self.break_duration
+    }
+
+    pub const fn long_break_duration(&self) -> Duration {
+        self.long_break_duration
     }
 }
