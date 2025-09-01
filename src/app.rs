@@ -126,6 +126,7 @@ impl App {
     fn start_timer(&mut self) {
         self.timer.start();
         self.current_session_start = Some(Local::now());
+        #[allow(clippy::cast_possible_truncation)]
         logger::log_session_start("work", self.timer.work_duration().as_secs() as u32 / 60);
     }
 

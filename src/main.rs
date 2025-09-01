@@ -34,7 +34,7 @@ fn main() -> io::Result<()> {
 
     // Initialize logger
     if let Err(e) = logger::init_logger() {
-        eprintln!("Failed to initialize logger: {}", e);
+        eprintln!("Failed to initialize logger: {e}");
     }
 
     logger::log_app_start(cli.work, cli.short_break, cli.long_break_time);

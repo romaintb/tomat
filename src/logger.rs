@@ -1,4 +1,4 @@
-use simplelog::*;
+use simplelog::{ConfigBuilder, LevelFilter, WriteLogger};
 use std::fs::OpenOptions;
 
 pub fn init_logger() -> Result<(), Box<dyn std::error::Error>> {
@@ -7,9 +7,7 @@ pub fn init_logger() -> Result<(), Box<dyn std::error::Error>> {
         .append(true)
         .open("tomat.log")?;
 
-    let config = ConfigBuilder::new()
-        .set_time_format_rfc3339()
-        .build();
+    let config = ConfigBuilder::new().set_time_format_rfc3339().build();
 
     WriteLogger::init(LevelFilter::Info, config, log_file)?;
 
@@ -17,32 +15,33 @@ pub fn init_logger() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 pub fn log_session_start(session_type: &str, duration_minutes: u32) {
-    info!("Started {} session ({} minutes)", session_type, duration_minutes);
+    info!("Started {session_type} session ({duration_minutes} minutes)");
 }
 
 pub fn log_session_complete(session_type: &str, session_name: Option<&str>) {
     if let Some(name) = session_name {
-        info!("Completed {} session: {}", session_type, name);
+        info!("Completed {session_type} session: {name}");
     } else {
-        info!("Completed {} session", session_type);
+        info!("Completed {session_type} session");
     }
 }
 
 pub fn log_session_pause(session_type: &str) {
-    info!("Paused {} session", session_type);
+    info!("Paused {session_type} session");
 }
 
 pub fn log_session_resume(session_type: &str) {
-    info!("Resumed {} session", session_type);
+    info!("Resumed {session_type} session");
 }
 
 pub fn log_session_skip(session_type: &str) {
-    info!("Skipped {} session", session_type);
+    info!("Skipped {session_type} session");
 }
 
 pub fn log_app_start(work_duration: u32, break_duration: u32, long_break_duration: u32) {
-    info!("App started with work: {}min, short break: {}min, long break: {}min",
-          work_duration, break_duration, long_break_duration);
+    info!(
+        "App started with work: {work_duration}min, short break: {break_duration}min, long break: {long_break_duration}min"
+    );
 }
 
 pub fn log_app_quit() {
