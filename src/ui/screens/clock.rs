@@ -23,7 +23,11 @@ impl Screen for ClockScreen {
         let time_str = now.format("%H:%M").to_string();
 
         let clock_display = Paragraph::new(time_str)
-            .style(Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD))
+            .style(
+                Style::default()
+                    .fg(Color::Cyan)
+                    .add_modifier(Modifier::BOLD),
+            )
             .alignment(ratatui::layout::Alignment::Center)
             .block(
                 Block::default()
