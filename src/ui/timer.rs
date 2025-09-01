@@ -16,18 +16,24 @@ pub fn render(frame: &mut Frame, area: Rect, app: &App) {
 
     let time_remaining = app.time_remaining();
     let current_state = app.current_state();
-    
-    let (time_text, status_text) = match current_state {
-        TimerState::NotStarted => ("--:--".to_string(), " (PRESS SPACE/ENTER TO START)".to_string()),
-        _ => {
-            let minutes = time_remaining.as_secs() / 60;
-            let seconds = time_remaining.as_secs() % 60;
-            let time_str = format!("{minutes:02}:{seconds:02}");
-            let pause_status = if app.timer.is_paused() { " (PAUSED)".to_string() } else { "".to_string() };
-            (time_str, pause_status)
-        }
+
+    let (time_text, status_text) = if current_state == TimerState::NotStarted {
+        (
+            "--:--".to_string(),
+            " (PRESS SPACE/ENTER TO START)".to_string(),
+        )
+    } else {
+        let minutes = time_remaining.as_secs() / 60;
+        let seconds = time_remaining.as_secs() % 60;
+        let time_str = format!("{minutes:02}:{seconds:02}");
+        let pause_status = if app.timer.is_paused() {
+            " (PAUSED)".to_string()
+        } else {
+            String::new()
+        };
+        (time_str, pause_status)
     };
-    
+
     let full_text = format!("{time_text}{status_text}");
 
     let timer_display = Paragraph::new(full_text)
