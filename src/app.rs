@@ -4,7 +4,9 @@ use std::time::{Duration, Instant};
 
 use crate::logger;
 use crate::timer::{PomodoroTimer, TimerState};
-use crate::ui::screens::{fullscreen::FullscreenScreen, normal::NormalScreen, Screen};
+use crate::ui::screens::{
+    fullscreen::FullscreenScreen, help::HelpScreen, normal::NormalScreen, Screen,
+};
 
 pub struct App {
     pub timer: PomodoroTimer,
@@ -46,6 +48,9 @@ impl App {
                 }
                 KeyCode::Char('f') => {
                     self.toggle_screen();
+                }
+                KeyCode::Char('h') => {
+                    self.show_help();
                 }
                 KeyCode::Char(' ') | KeyCode::Enter => {
                     if self.timer.state() == TimerState::NotStarted {
@@ -191,8 +196,19 @@ impl App {
             .is_some()
         {
             self.current_screen = Box::new(FullscreenScreen);
+        } else if self
+            .current_screen
+            .as_any()
+            .downcast_ref::<FullscreenScreen>()
+            .is_some()
+        {
+            self.current_screen = Box::new(HelpScreen);
         } else {
             self.current_screen = Box::new(NormalScreen);
         }
+    }
+
+    fn show_help(&mut self) {
+        self.current_screen = Box::new(HelpScreen);
     }
 }

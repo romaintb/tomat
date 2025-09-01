@@ -69,7 +69,7 @@ impl FullscreenScreen {
     /// Render the help text at the bottom.
     fn render_help(frame: &mut Frame, area: Rect) {
         let help_text = vec![Line::from(vec![Span::raw(
-            "Press F to return to normal view",
+            "Press F to return to normal view | H for help | Q to quit",
         )])];
         let help = Paragraph::new(help_text).block(Block::default().borders(Borders::TOP));
         frame.render_widget(help, area);

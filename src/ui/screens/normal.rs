@@ -181,13 +181,13 @@ impl NormalScreen {
     /// Render the controls section with available keyboard shortcuts.
     fn render_controls(frame: &mut Frame, timer_data: &TimerData, area: Rect) {
         let controls_text = if timer_data.is_running {
-            "Controls: [Space] Pause/Resume | [R] Reset | [S] Skip | [N] Name Session | [F] Fullscreen | [Q] Quit"
+            "Controls: [Space] Pause/Resume | [R] Reset | [S] Skip | [N] Name Session | [F] Fullscreen | [H] Help | [Q] Quit"
         } else if timer_data.session_start_time.is_some() {
             // Timer has started but is currently paused
-            "Controls: [Space/Enter] Resume | [R] Reset | [N] Name Session | [F] Fullscreen | [Q] Quit"
+            "Controls: [Space/Enter] Resume | [R] Reset | [N] Name Session | [F] Fullscreen | [H] Help | [Q] Quit"
         } else {
             // Timer has never started
-            "Controls: [Space/Enter] Start Timer | [R] Reset | [N] Name Session | [F] Fullscreen | [Q] Quit"
+            "Controls: [Space/Enter] Start Timer | [R] Reset | [N] Name Session | [F] Fullscreen | [H] Help | [Q] Quit"
         };
 
         let controls = Paragraph::new(controls_text)
