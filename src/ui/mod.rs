@@ -8,8 +8,6 @@ use ratatui::prelude::*;
 use crate::app::App;
 use crate::data::TimerData;
 
-pub mod controls;
-pub mod header;
 pub mod modal;
 pub mod screens;
 

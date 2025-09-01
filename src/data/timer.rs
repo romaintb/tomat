@@ -21,14 +21,19 @@ impl TimerData {
     }
 
     pub fn progress_percentage(&self) -> f64 {
-        if self.total_time.as_secs() == 0 {
-            0.0
-        } else {
-            #[allow(clippy::cast_precision_loss)]
-            let remaining = self.remaining_time.as_secs() as f64;
-            #[allow(clippy::cast_precision_loss)]
-            let total = self.total_time.as_secs() as f64;
-            ((total - remaining) / total) * 100.0
+        // Early return 0.0 for NotStarted/paused states
+        if !self.is_running || self.total_time.as_secs() == 0 {
+            return 0.0;
         }
+
+        // Use as_secs_f64 to avoid clippy warnings
+        let remaining = self.remaining_time.as_secs_f64();
+        let total = self.total_time.as_secs_f64();
+
+        // Compute percentage as ((total - remaining) / total) * 100.0
+        let percentage = ((total - remaining) / total) * 100.0;
+
+        // Clamp the result between 0.0 and 100.0
+        percentage.clamp(0.0, 100.0)
     }
 }

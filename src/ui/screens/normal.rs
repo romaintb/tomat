@@ -80,9 +80,9 @@ impl NormalScreen {
 
         // Time remaining display
         let time_text = if timer_data.remaining_time.as_secs() == 0 {
-            "--:--"
+            String::from("--:--")
         } else {
-            &timer_data.format_time()
+            timer_data.format_time()
         };
 
         let status_text = if timer_data.is_paused {
@@ -106,12 +106,12 @@ impl NormalScreen {
         frame.render_widget(timer_display, timer_chunks[0]);
 
         // Session info
-        let session_text = if timer_data.naming_mode {
-            "📝 NAMING MODE - Type session name..."
+        let session_text: String = if timer_data.naming_mode {
+            "📝 NAMING MODE - Type session name...".to_string()
         } else if timer_data.session_name.is_empty() {
-            "Press [N] to name this session"
+            "Press [N] to name this session".to_string()
         } else {
-            &format!("📝 {}", timer_data.session_name)
+            format!("📝 {}", timer_data.session_name)
         };
         let session_display = Paragraph::new(session_text)
             .style(Style::default().fg(Color::Cyan))
@@ -182,7 +182,11 @@ impl NormalScreen {
     fn render_controls(frame: &mut Frame, timer_data: &TimerData, area: Rect) {
         let controls_text = if timer_data.is_running {
             "Controls: [Space] Pause/Resume | [R] Reset | [S] Skip | [N] Name Session | [F] Fullscreen | [Q] Quit"
+        } else if timer_data.session_start_time.is_some() {
+            // Timer has started but is currently paused
+            "Controls: [Space/Enter] Resume | [R] Reset | [N] Name Session | [F] Fullscreen | [Q] Quit"
         } else {
+            // Timer has never started
             "Controls: [Space/Enter] Start Timer | [R] Reset | [N] Name Session | [F] Fullscreen | [Q] Quit"
         };
 
