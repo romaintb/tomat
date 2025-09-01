@@ -1,5 +1,7 @@
 use std::time::Duration;
 
+use crate::logger;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TimerState {
     Work,
@@ -79,18 +81,21 @@ impl PomodoroTimer {
         self.current_state = TimerState::Work;
         self.time_remaining = self.work_duration;
         self.total_duration = self.work_duration;
+        logger::log_session_start("work", self.work_duration.as_secs() as u32 / 60);
     }
 
     fn start_short_break(&mut self) {
         self.current_state = TimerState::ShortBreak;
         self.time_remaining = self.break_duration;
         self.total_duration = self.break_duration;
+        logger::log_session_start("short break", self.break_duration.as_secs() as u32 / 60);
     }
 
     fn start_long_break(&mut self) {
         self.current_state = TimerState::LongBreak;
         self.time_remaining = self.long_break_duration;
         self.total_duration = self.long_break_duration;
+        logger::log_session_start("long break", self.long_break_duration.as_secs() as u32 / 60);
     }
 
     pub fn start(&mut self) {
