@@ -9,6 +9,7 @@ use std::any::Any;
 use crate::data::TimerData;
 
 pub mod fullscreen;
+pub mod help;
 pub mod normal;
 
 /// Trait that all screens must implement for rendering.
