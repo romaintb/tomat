@@ -21,11 +21,14 @@ pub fn log_session_start(session_type: &str, duration_minutes: u32) {
 }
 
 pub fn log_session_complete(session_type: &str, session_name: Option<&str>) {
-    if let Some(name) = session_name {
-        info!("Completed {session_type} session: {name}");
-    } else {
-        info!("Completed {session_type} session");
-    }
+    session_name.map_or_else(
+        || {
+            info!("Completed {session_type} session");
+        },
+        |name| {
+            info!("Completed {session_type} session: {name}");
+        },
+    );
 }
 
 pub fn log_session_pause(session_type: &str) {
