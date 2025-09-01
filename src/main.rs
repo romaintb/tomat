@@ -1,11 +1,15 @@
 //! A terminal-based Pomodoro technique timer.
 #![allow(clippy::multiple_crate_versions)]
 
+#[macro_use]
+extern crate log;
+
 use clap::Parser;
 use std::io;
 
 mod app;
 mod data;
+mod logger;
 mod timer;
 mod ui;
 
@@ -28,6 +32,13 @@ struct Cli {
 fn main() -> io::Result<()> {
     let cli = Cli::parse();
 
+    // Initialize logger
+    if let Err(e) = logger::init_logger() {
+        eprintln!("Failed to initialize logger: {e}");
+    }
+
+    logger::log_app_start(cli.work, cli.short_break, cli.long_break_time);
+
     let mut terminal = ratatui::init();
     terminal.clear()?;
 
@@ -35,6 +46,8 @@ fn main() -> io::Result<()> {
     let result = run_app(&mut terminal, &mut app);
 
     ratatui::restore();
+
+    logger::log_app_quit();
 
     result
 }

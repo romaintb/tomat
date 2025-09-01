@@ -2,6 +2,7 @@ use chrono::{DateTime, Local};
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use std::time::{Duration, Instant};
 
+use crate::logger;
 use crate::timer::{PomodoroTimer, TimerState};
 use crate::ui::screens::{fullscreen::FullscreenScreen, normal::NormalScreen, Screen};
 
@@ -79,6 +80,19 @@ impl App {
         let session_completed = self.timer.tick(elapsed);
         if session_completed {
             self.sessions_completed += 1;
+            let session_type = match self.timer.state() {
+                TimerState::Work | TimerState::WorkPaused => "work",
+                TimerState::ShortBreak | TimerState::ShortBreakPaused => "short break",
+                TimerState::LongBreak | TimerState::LongBreakPaused => "long break",
+                TimerState::NotStarted => "unknown",
+            };
+            let session_name = if self.current_session_name.is_empty() {
+                None
+            } else {
+                Some(self.current_session_name.as_str())
+            };
+            logger::log_session_complete(session_type, session_name);
+
             if matches!(self.timer.state(), TimerState::Work) {
                 self.current_session_start = Some(Local::now());
             }
@@ -88,10 +102,19 @@ impl App {
     }
 
     fn toggle_pause(&mut self) {
+        let session_type = match self.timer.state() {
+            TimerState::Work | TimerState::WorkPaused => "work",
+            TimerState::ShortBreak | TimerState::ShortBreakPaused => "short break",
+            TimerState::LongBreak | TimerState::LongBreakPaused => "long break",
+            TimerState::NotStarted => "unknown",
+        };
+
         if self.timer.is_paused() {
             self.timer.resume();
+            logger::log_session_resume(session_type);
         } else {
             self.timer.pause();
+            logger::log_session_pause(session_type);
         }
     }
 
@@ -103,9 +126,18 @@ impl App {
     fn start_timer(&mut self) {
         self.timer.start();
         self.current_session_start = Some(Local::now());
+        #[allow(clippy::cast_possible_truncation)]
+        logger::log_session_start("work", self.timer.work_duration().as_secs() as u32 / 60);
     }
 
     fn skip_session(&mut self) {
+        let session_type = match self.timer.state() {
+            TimerState::Work | TimerState::WorkPaused => "work",
+            TimerState::ShortBreak | TimerState::ShortBreakPaused => "short break",
+            TimerState::LongBreak | TimerState::LongBreakPaused => "long break",
+            TimerState::NotStarted => "unknown",
+        };
+        logger::log_session_skip(session_type);
         self.timer.skip_to_next();
     }
 
