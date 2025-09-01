@@ -11,9 +11,6 @@ use crate::data::TimerData;
 pub mod fullscreen;
 pub mod normal;
 
-pub use fullscreen::FullscreenScreen;
-pub use normal::NormalScreen;
-
 /// Trait that all screens must implement for rendering.
 pub trait Screen {
     /// Render the screen content to the given frame.

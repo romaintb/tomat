@@ -120,15 +120,6 @@ impl PomodoroTimer {
         self.time_remaining
     }
 
-    pub fn progress(&self) -> f64 {
-        if self.current_state == TimerState::NotStarted || self.total_duration == Duration::ZERO {
-            0.0
-        } else {
-            let elapsed = self.total_duration - self.time_remaining;
-            elapsed.as_secs_f64() / self.total_duration.as_secs_f64()
-        }
-    }
-
     pub fn pause(&mut self) {
         self.current_state = match self.current_state {
             TimerState::Work => TimerState::WorkPaused,

@@ -3,7 +3,7 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use std::time::{Duration, Instant};
 
 use crate::timer::{PomodoroTimer, TimerState};
-use crate::ui::screens::{FullscreenScreen, NormalScreen, Screen};
+use crate::ui::screens::{fullscreen::FullscreenScreen, normal::NormalScreen, Screen};
 
 pub struct App {
     pub timer: PomodoroTimer,
@@ -117,10 +117,6 @@ impl App {
         self.timer.state()
     }
 
-    pub fn progress(&self) -> f64 {
-        self.timer.progress()
-    }
-
     fn handle_naming_input(&mut self, key: KeyEvent) {
         match key.code {
             KeyCode::Enter => {
@@ -166,12 +162,5 @@ impl App {
         } else {
             self.current_screen = Box::new(NormalScreen);
         }
-    }
-
-    const fn is_work_session(&self) -> bool {
-        matches!(
-            self.timer.state(),
-            TimerState::Work | TimerState::WorkPaused
-        )
     }
 }

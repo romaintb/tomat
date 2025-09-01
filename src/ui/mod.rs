@@ -12,8 +12,6 @@ pub mod controls;
 pub mod header;
 pub mod modal;
 pub mod screens;
-pub mod stats;
-pub mod timer;
 
 pub use screens::Screen;
 

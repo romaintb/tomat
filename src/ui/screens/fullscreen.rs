@@ -50,14 +50,19 @@ impl FullscreenScreen {
         let timer_x = area.x
             + (area
                 .width
-                .saturating_sub(timer_data.format_time().len() as u16))
+                .saturating_sub(u16::try_from(timer_data.format_time().len()).unwrap_or(0)))
                 / 2;
         let timer_y = area.y + (area.height.saturating_sub(1)) / 2;
 
         let timer = Paragraph::new(timer_text).block(Block::default().borders(Borders::NONE));
         frame.render_widget(
             timer,
-            Rect::new(timer_x, timer_y, timer_data.format_time().len() as u16, 1),
+            Rect::new(
+                timer_x,
+                timer_y,
+                u16::try_from(timer_data.format_time().len()).unwrap_or(0),
+                1,
+            ),
         );
     }
 

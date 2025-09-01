@@ -44,10 +44,12 @@ impl Screen for NormalScreen {
 impl NormalScreen {
     /// Render the header section with title and status.
     fn render_header(frame: &mut Frame, timer_data: &TimerData, area: Rect) {
-        let title = match timer_data.is_running {
-            true if timer_data.is_paused => "⏸️ Pomodoro - Paused",
-            true => "🍅 Pomodoro - Active",
-            false => "🍅 Pomodoro - Ready to Start",
+        let title = if timer_data.is_paused {
+            "⏸️ Pomodoro - Paused"
+        } else if timer_data.is_running {
+            "🍅 Pomodoro - Active"
+        } else {
+            "🍅 Pomodoro - Ready to Start"
         };
 
         let color = if timer_data.is_paused {
@@ -161,11 +163,10 @@ impl NormalScreen {
         frame.render_widget(stats_display, stats_chunks[1]);
 
         // Current session info
-        let session_info = if let Some(start_time) = &timer_data.session_start_time {
-            format!("Session started: {}", start_time)
-        } else {
-            "Session started: --:--:--".to_string()
-        };
+        let session_info = timer_data.session_start_time.as_ref().map_or_else(
+            || "Session started: --:--:--".to_string(),
+            |start_time| format!("Session started: {start_time}"),
+        );
         let session_display = Paragraph::new(session_info)
             .block(
                 Block::default()
