@@ -5,7 +5,8 @@ use std::time::{Duration, Instant};
 use crate::logger;
 use crate::timer::{PomodoroTimer, TimerState};
 use crate::ui::screens::{
-    clock::ClockScreen, fullscreen::FullscreenScreen, help::HelpScreen, normal::NormalScreen, Screen,
+    clock::ClockScreen, fullscreen::FullscreenScreen, help::HelpScreen, normal::NormalScreen,
+    Screen,
 };
 
 pub struct App {
