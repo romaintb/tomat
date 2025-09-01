@@ -8,6 +8,7 @@ use std::any::Any;
 
 use crate::data::TimerData;
 
+pub mod clock;
 pub mod fullscreen;
 pub mod help;
 pub mod normal;
