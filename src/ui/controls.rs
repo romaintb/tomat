@@ -9,13 +9,12 @@ use crate::{app::App, timer::TimerState};
 
 /// Renders the controls area showing available keyboard shortcuts.
 pub fn render(frame: &mut Frame, area: Rect, app: &App) {
-    let controls_text = if matches!(
-        app.current_state(),
-        TimerState::Work | TimerState::WorkPaused
-    ) {
-        "Controls: [Space] Pause/Resume | [R] Reset | [S] Skip | [N] Name Session | [Q] Quit"
-    } else {
-        "Controls: [Space] Pause/Resume | [R] Reset | [S] Skip | [Q] Quit"
+    let controls_text = match app.current_state() {
+        TimerState::NotStarted => "Controls: [Space/Enter] Start Timer | [R] Reset | [Q] Quit",
+        TimerState::Work | TimerState::WorkPaused => {
+            "Controls: [Space] Pause/Resume | [R] Reset | [S] Skip | [N] Name Session | [Q] Quit"
+        }
+        _ => "Controls: [Space] Pause/Resume | [R] Reset | [S] Skip | [Q] Quit",
     };
 
     let controls = Paragraph::new(controls_text)

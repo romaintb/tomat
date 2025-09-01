@@ -8,6 +8,7 @@ pub enum TimerState {
     ShortBreakPaused,
     LongBreak,
     LongBreakPaused,
+    NotStarted,
 }
 
 pub struct PomodoroTimer {
@@ -30,16 +31,16 @@ impl PomodoroTimer {
             work_duration,
             break_duration,
             long_break_duration,
-            current_state: TimerState::Work,
-            time_remaining: work_duration,
+            current_state: TimerState::NotStarted,
+            time_remaining: Duration::ZERO,
             work_sessions_completed: 0,
-            total_duration: work_duration,
+            total_duration: Duration::ZERO,
         }
     }
 
     pub fn tick(&mut self, elapsed: Duration) -> bool {
-        // Don't tick if paused
-        if self.is_paused() {
+        // Don't tick if paused or not started
+        if self.is_paused() || self.current_state == TimerState::NotStarted {
             return false;
         }
 
@@ -54,6 +55,9 @@ impl PomodoroTimer {
 
     fn complete_session(&mut self) {
         match self.current_state {
+            TimerState::NotStarted => {
+                // Do nothing if timer hasn't started
+            }
             TimerState::Work | TimerState::WorkPaused => {
                 self.work_sessions_completed += 1;
                 if self.work_sessions_completed % 4 == 0 {
@@ -89,10 +93,18 @@ impl PomodoroTimer {
         self.total_duration = self.long_break_duration;
     }
 
+    pub fn start(&mut self) {
+        if self.current_state == TimerState::NotStarted {
+            self.current_state = TimerState::Work;
+            self.time_remaining = self.work_duration;
+            self.total_duration = self.work_duration;
+        }
+    }
+
     pub fn reset(&mut self) {
-        self.current_state = TimerState::Work;
-        self.time_remaining = self.work_duration;
-        self.total_duration = self.work_duration;
+        self.current_state = TimerState::NotStarted;
+        self.time_remaining = Duration::ZERO;
+        self.total_duration = Duration::ZERO;
         self.work_sessions_completed = 0;
     }
 
@@ -109,8 +121,12 @@ impl PomodoroTimer {
     }
 
     pub fn progress(&self) -> f64 {
-        let elapsed = self.total_duration - self.time_remaining;
-        elapsed.as_secs_f64() / self.total_duration.as_secs_f64()
+        if self.current_state == TimerState::NotStarted || self.total_duration == Duration::ZERO {
+            0.0
+        } else {
+            let elapsed = self.total_duration - self.time_remaining;
+            elapsed.as_secs_f64() / self.total_duration.as_secs_f64()
+        }
     }
 
     pub fn pause(&mut self) {

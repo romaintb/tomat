@@ -41,7 +41,11 @@ impl App {
                     self.should_quit = true;
                 }
                 KeyCode::Char(' ') | KeyCode::Enter => {
-                    self.toggle_pause();
+                    if self.timer.state() == TimerState::NotStarted {
+                        self.start_timer();
+                    } else {
+                        self.toggle_pause();
+                    }
                 }
                 KeyCode::Char('r') => {
                     self.reset_timer();
@@ -87,6 +91,11 @@ impl App {
     fn reset_timer(&mut self) {
         self.timer.reset();
         self.current_session_start = None;
+    }
+
+    fn start_timer(&mut self) {
+        self.timer.start();
+        self.current_session_start = Some(Local::now());
     }
 
     fn skip_session(&mut self) {

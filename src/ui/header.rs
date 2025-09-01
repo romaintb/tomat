@@ -10,6 +10,7 @@ use crate::{app::App, timer::TimerState};
 /// Renders the application header with title and current state information.
 pub fn render(frame: &mut Frame, area: Rect, app: &App) {
     let title = match app.current_state() {
+        TimerState::NotStarted => "🍅 Pomodoro - Ready to Start",
         TimerState::Work => "🍅 Pomodoro - Work Session",
         TimerState::WorkPaused => "⏸️ Pomodoro - Work Session (Paused)",
         TimerState::ShortBreak => "☕ Pomodoro - Short Break",
@@ -19,6 +20,7 @@ pub fn render(frame: &mut Frame, area: Rect, app: &App) {
     };
 
     let color = match app.current_state() {
+        TimerState::NotStarted => Color::Blue,
         TimerState::Work | TimerState::WorkPaused => Color::Red,
         TimerState::ShortBreak | TimerState::ShortBreakPaused => Color::Yellow,
         TimerState::LongBreak | TimerState::LongBreakPaused => Color::Green,
