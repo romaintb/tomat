@@ -7,7 +7,9 @@ pub fn init_logger() -> Result<(), Box<dyn std::error::Error>> {
         .append(true)
         .open("tomat.log")?;
 
-    let config = ConfigBuilder::new().set_time_format_rfc3339().build();
+    let config = ConfigBuilder::new()
+        .set_time_format("%Y-%m-%dT%H:%M:%S%.3fZ".to_string())
+        .build();
 
     WriteLogger::init(LevelFilter::Info, config, log_file)?;
 
