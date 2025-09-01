@@ -6,29 +6,54 @@
 use ratatui::prelude::*;
 
 use crate::app::App;
+use crate::data::TimerData;
 
 pub mod controls;
 pub mod header;
 pub mod modal;
+pub mod screens;
 pub mod stats;
 pub mod timer;
 
+pub use screens::Screen;
+
 /// Main render function that orchestrates the rendering of all UI components.
 pub fn render(frame: &mut Frame, app: &App) {
-    let chunks = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Length(3), // Header
-            Constraint::Length(6), // Timer area (increased from 5 to 6 for two 3-line boxes)
-            Constraint::Min(0),    // Stats (flexible)
-            Constraint::Length(3), // Controls
-        ])
-        .split(frame.area());
+    // Create timer data from app state
+    let timer_data = TimerData {
+        remaining_time: app.time_remaining(),
+        total_time: match app.current_state() {
+            crate::timer::TimerState::Work | crate::timer::TimerState::WorkPaused => {
+                app.timer.work_duration()
+            }
+            crate::timer::TimerState::ShortBreak | crate::timer::TimerState::ShortBreakPaused => {
+                app.timer.break_duration()
+            }
+            crate::timer::TimerState::LongBreak | crate::timer::TimerState::LongBreakPaused => {
+                app.timer.long_break_duration()
+            }
+            crate::timer::TimerState::NotStarted => app.timer.work_duration(),
+        },
+        is_running: app.current_state() != crate::timer::TimerState::NotStarted
+            && app.current_state() != crate::timer::TimerState::WorkPaused
+            && app.current_state() != crate::timer::TimerState::ShortBreakPaused
+            && app.current_state() != crate::timer::TimerState::LongBreakPaused,
+        is_paused: matches!(
+            app.current_state(),
+            crate::timer::TimerState::WorkPaused
+                | crate::timer::TimerState::ShortBreakPaused
+                | crate::timer::TimerState::LongBreakPaused
+        ),
+        sessions_completed: app.sessions_completed,
+        session_start_time: app
+            .current_session_start
+            .map(|dt| dt.format("%H:%M:%S").to_string()),
+        session_name: app.current_session_name.clone(),
+        naming_mode: app.naming_mode,
+    };
 
-    header::render(frame, chunks[0], app);
-    timer::render(frame, chunks[1], app);
-    stats::render(frame, chunks[2], app);
-    controls::render(frame, chunks[3], app);
+    // Render the current screen
+    app.current_screen.render(frame, &timer_data, frame.area());
 
     // Render naming modal on top if in naming mode
     if app.naming_mode {

@@ -153,4 +153,16 @@ impl PomodoroTimer {
             TimerState::WorkPaused | TimerState::ShortBreakPaused | TimerState::LongBreakPaused
         )
     }
+
+    pub const fn work_duration(&self) -> Duration {
+        self.work_duration
+    }
+
+    pub const fn break_duration(&self) -> Duration {
+        self.break_duration
+    }
+
+    pub const fn long_break_duration(&self) -> Duration {
+        self.long_break_duration
+    }
 }
